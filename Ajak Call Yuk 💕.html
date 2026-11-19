@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Call yuk? 💕</title>
+<style>
+:root{
+  --bg1:#ffe3ec;--bg2:#ffc2d6;--card:rgba(255,255,255,.85);--text:#4a1d2e;--muted:#8a5268;
+  --accent:#ff4d85;--accent2:#ff7aa5;--no-bg:#fff;--no-text:#6b4455;--no-border:#e8b8c9;
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg1:#2a1020;--bg2:#3d1630;--card:rgba(50,22,38,.88);--text:#ffe3ec;--muted:#d6a3b8;
+    --accent:#ff5c93;--accent2:#ff8fb3;--no-bg:#3a1a2c;--no-text:#f2c9d8;--no-border:#6b3550;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg1:#2a1020;--bg2:#3d1630;--card:rgba(50,22,38,.88);--text:#ffe3ec;--muted:#d6a3b8;
+  --accent:#ff5c93;--accent2:#ff8fb3;--no-bg:#3a1a2c;--no-text:#f2c9d8;--no-border:#6b3550;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);
+  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.card{
+  position:relative;z-index:2;width:min(92vw,420px);padding:32px 24px;text-align:center;
+  background:var(--card);border-radius:28px;box-shadow:0 18px 50px rgba(255,77,133,.25);
+  backdrop-filter:blur(8px);
+}
+.emoji{font-size:56px;line-height:1;animation:beat 1.4s ease-in-out infinite}
+h1{font-size:26px;margin:14px 0 8px}
+p{margin:0 0 24px;color:var(--muted);line-height:1.6;font-size:16px}
+.btns{display:flex;gap:14px;justify-content:center;align-items:center;min-height:64px}
+button{font:inherit;font-weight:600;border:0;border-radius:999px;cursor:pointer;padding:14px 28px;font-size:17px}
+#yes{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  box-shadow:0 8px 20px rgba(255,77,133,.4);transition:transform .25s ease;transform-origin:center;
+}
+#yes:active{filter:brightness(.95)}
+#no{
+  background:var(--no-bg);color:var(--no-text);border:2px solid var(--no-border);
+  transition:left .22s ease,top .22s ease;z-index:5;
+}
+#no.fly{position:fixed}
+.hint{margin:18px 0 0;font-size:14px;min-height:20px;color:var(--muted)}
+.heart{position:fixed;bottom:-40px;z-index:1;opacity:.7;pointer-events:none;animation:rise linear forwards}
+@keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@media (prefers-reduced-motion: reduce){
+  .emoji{animation:none}.heart{display:none}#no{transition:none}
+}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="emoji">🥺</div>
+  <h1 id="title">Oyaaa, mau ya call sama aa?</h1>
+  <p id="sub">kangen bangett sama oyaaa huhu , boleh ya?</p>
+  <div class="btns">
+    <button id="yes" type="button">Mau 💖</button>
+    <button id="no" type="button">Engga</button>
+  </div>
+  <div class="hint" id="hint"></div>
+</main>
+
+<script>
+// ====== UBAH DI SINI ======
+var WA_NUMBER = "6282317248856"; // nomor WA pasangan, format 62 tanpa + dan tanpa 0 di depan
+var WA_TEXT   = "Iya, aku mauu kok call sama aa hari inii";
+// ==========================
+
+var yes = document.getElementById("yes");
+var no = document.getElementById("no");
+var hint = document.getElementById("hint");
+var tries = 0;
+
+var noLabels = ["Engga","Yakin?","Coba pikir lagi","Jangan gitu dong 🥺","Tombolnya capek lho","Pencet yang pink aja deh","Please? 🥹","Ayolah oyaaa"];
+var hints = ["","Eh, kok kabur?","Tuh kan susah dipencet 😝","\"Mau\" makin gede lho","Udah, nyerah aja ","Tombol Engga-nya ga mau dipencet","kangenn"];
+
+function dodge(e){
+  if(e && e.preventDefault) e.preventDefault();
+  tries++;
+  var pad = 12;
+  var w = no.offsetWidth, h = no.offsetHeight;
+  var maxX = Math.max(pad, window.innerWidth - w - pad);
+  var maxY = Math.max(pad, window.innerHeight - h - pad);
+  var rect = no.getBoundingClientRect();
+  var x, y, i = 0, yr = yes.getBoundingClientRect();
+  do {
+    x = pad + Math.random() * (maxX - pad);
+    y = pad + Math.random() * (maxY - pad);
+    i++;
+  } while (i < 15 && (
+    Math.hypot(x - rect.left, y - rect.top) < 140 ||
+    (x < yr.right + 10 && x + w > yr.left - 10 && y < yr.bottom + 10 && y + h > yr.top - 10)
+  ));
+  no.classList.add("fly");
+  no.style.left = x + "px";
+  no.style.top = y + "px";
+  no.textContent = noLabels[Math.min(tries, noLabels.length - 1)];
+  hint.textContent = hints[Math.min(tries, hints.length - 1)];
+  yes.style.transform = "scale(" + Math.min(1 + tries * 0.12, 2) + ")";
+  if (tries > 2) { document.querySelector(".emoji").textContent = "😭"; }
+}
+
+["pointerenter","pointerdown","click","focus"].forEach(function(ev){
+  no.addEventListener(ev, dodge);
+});
+no.addEventListener("touchstart", dodge, {passive:false});
+
+yes.addEventListener("click", function(){
+  document.querySelector(".emoji").textContent = "🥰";
+  document.getElementById("title").textContent = "Yeay! timaaciii oyaaa 💖";
+  document.getElementById("sub").textContent = "Bentar ya, aku bukain WhatsApp...";
+  no.style.display = "none";
+  hint.textContent = "";
+  var url = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(WA_TEXT);
+  setTimeout(function(){ window.location.href = url; }, 700);
+});
+
+function heart(){
+  var s = document.createElement("span");
+  s.className = "heart";
+  s.textContent = ["💖","💕","💗","💘"][Math.floor(Math.random()*4)];
+  s.style.left = Math.random()*100 + "vw";
+  s.style.fontSize = (16 + Math.random()*22) + "px";
+  s.style.animationDuration = (6 + Math.random()*6) + "s";
+  document.body.appendChild(s);
+  setTimeout(function(){ s.remove(); }, 12500);
+}
+setInterval(heart, 700);
+</script>
+</body>
+</html>
